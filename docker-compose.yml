@@ -1,0 +1,39 @@
+# -----------------------------
+# File: docker-compose.yml
+# -----------------------------
+version: '3.8'
+services:
+  java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-java
+    ports:
+      - "8080:8080"
+    networks:
+      - app-net
+
+  python-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-python
+    ports:
+      - "5000:5000"
+    networks:
+      - app-net
+
+  nodejs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-nodejs
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+
+  redis:
+    image: redis:7
+    networks:
+      - app-net
+
+networks:
+  app-net:
