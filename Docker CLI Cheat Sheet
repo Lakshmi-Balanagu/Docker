@@ -1,0 +1,162 @@
+# -----------------------------
+# Docker CLI Cheat Sheet for All Topics
+# -----------------------------
+
+# ✅ 1. Build Docker Images
+# Java, Python, Node.js
+
+docker build -t java-app -f Dockerfile-java .
+docker build -t python-app -f Dockerfile-python .
+docker build -t nodejs-app -f Dockerfile-nodejs .
+
+# ✅ 2. Run Containers
+
+docker run -d -p 8080:8080 --name java-app java-app
+docker run -d -p 5000:5000 --name python-app python-app
+docker run -d -p 3000:3000 --name nodejs-app nodejs-app
+
+# ✅ 3. Volume Mounts (Host ↔ Container)
+
+docker run -v $(pwd)/data:/app/data java-app
+
+# ✅ 4. Create & Use Docker Volumes
+
+docker volume create appdata
+docker run -v appdata:/app/data java-app
+docker volume ls
+docker volume inspect appdata
+
+# ✅ 5. Environment Variables
+
+docker run -e ENV=prod java-app
+
+# ✅ 6. Networks
+
+docker network create app-net
+docker run --network app-net --name java-app java-app
+
+docker network ls
+docker network inspect app-net
+
+docker network connect app-net python-app
+
+docker network disconnect app-net java-app
+
+# ✅ 7. Docker Compose (multi-service)
+
+docker-compose up --build -d
+docker-compose down
+docker-compose ps
+docker-compose logs -f
+
+# ✅ 8. Docker Logs and Exec
+
+docker logs -f java-app
+docker exec -it java-app sh
+
+# ✅ 9. Image and Container Management
+
+docker ps -a
+docker stop <container>
+docker rm <container>
+docker images
+docker rmi <image>
+
+# ✅ 10. Save and Load Images
+
+docker save -o java-app.tar java-app
+docker load -i java-app.tar
+
+# ✅ 11. Push/Pull from DockerHub
+
+docker tag java-app yourname/java-app:latest
+docker login
+docker push yourname/java-app:latest
+docker pull yourname/java-app:latest
+
+# ✅ 12. Docker System Cleanup
+
+docker system prune -a --volumes
+
+# ✅ 13. Healthcheck (example in Dockerfile)
+# Add to Dockerfile:
+# HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+
+# ✅ 14. Copy files
+
+docker cp java-app:/app/logs.txt ./logs.txt
+
+# ✅ 15. Build Context Best Practice
+# Avoid copying .git, node_modules etc.
+# Use .dockerignore
+
+# .dockerignore
+node_modules
+target
+.git
+
+# ✅ 16. Debug with Interactive Shell
+
+docker run -it --entrypoint sh java-app
+
+# ✅ 17. Compose Override
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+# ✅ 18. Multi-Stage Build Benefits
+# Reduces image size, better security
+
+# ✅ 19. Inspect Image Layers
+
+docker history java-app
+
+# ✅ 20. Export/Import Container Filesystem
+
+docker export java-app > java-app.tar
+docker import java-app.tar
+
+# ✅ 21. Bind Mounts vs Volumes
+# Bind: `-v $(pwd)/data:/data`
+# Volume: `docker volume create appdata`
+
+# ✅ 22. Tagging Strategy
+
+docker build -t yourname/java-app:1.0.0 .
+docker tag yourname/java-app:1.0.0 yourname/java-app:latest
+
+# ✅ 23. Inspect Metadata
+
+docker inspect java-app
+
+# ✅ 24. Resource Limits
+
+docker run --memory=512m --cpus=1 java-app
+
+# ✅ 25. Base Image Security
+# Use slim/alpine images. Scan with Trivy
+
+# ✅ 26. Docker Scan (Vulnerability Scan)
+
+docker scan java-app
+
+# ✅ 27. Clean Named Volumes and Networks
+
+docker volume rm appdata
+docker network rm app-net
+
+# ✅ 28. Restart Policies
+# Always restart container unless stopped manually
+
+docker run --restart unless-stopped java-app
+
+# ✅ 29. Detach/Attach to Running Containers
+
+docker attach java-app
+# To detach: CTRL + P + Q
+
+# ✅ 30. Inspect Docker Events (live)
+
+docker events
+
+# -----------------------------
+# End of Docker Cheat Sheet
+# -----------------------------
