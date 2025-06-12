@@ -1,0 +1,12 @@
+# Use official Gradle image for building
+FROM gradle:latest AS build
+WORKDIR /app
+COPY . .
+RUN gradle build --no-daemon
+
+# Use a lightweight JDK image for running the application
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
